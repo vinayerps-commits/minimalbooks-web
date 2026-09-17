@@ -77,6 +77,7 @@ export function InvoiceDetail({ voucherId, onBack }: { voucherId: string; onBack
           <table class="master-table">
             <thead>
               <tr>
+                <th>Part No.</th>
                 <th>Description</th>
                 <th>HSN/SAC</th>
                 <th>Qty</th>
@@ -92,6 +93,7 @@ export function InvoiceDetail({ voucherId, onBack }: { voucherId: string; onBack
             <tbody>
               {lines.map((l) => (
                 <tr key={l.id}>
+                  <td>{l.partNo}</td>
                   <td>{l.description}</td>
                   <td>{l.hsnSac}</td>
                   <td class="num">{l.qty}</td>

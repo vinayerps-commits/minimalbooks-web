@@ -44,6 +44,7 @@ export async function createDraftInvoice(input: NewInvoiceInput): Promise<Result
     p_notes: input.notes,
     p_lines: input.lines.map((l) => ({
       itemId: l.itemId,
+      partNo: l.partNo,
       description: l.description,
       hsnSac: l.hsnSac,
       qty: l.qty,
@@ -166,6 +167,7 @@ export async function listInvoices(companyId: string): Promise<Result<InvoiceReg
 interface VoucherLineRow {
   id: string;
   item_id: string | null;
+  part_no: string;
   description: string;
   hsn_sac: string;
   qty: number;
@@ -182,6 +184,7 @@ function lineFromRow(row: VoucherLineRow): VoucherLine {
   return {
     id: row.id,
     itemId: row.item_id,
+    partNo: row.part_no,
     description: row.description,
     hsnSac: row.hsn_sac,
     qty: row.qty,
@@ -209,7 +212,7 @@ export async function getInvoice(
     getSupabaseClient()
       .from("voucher_lines")
       .select(
-        "id, item_id, description, hsn_sac, qty, unit, rate, tax_percent, cgst_amt, sgst_amt, igst_amt, line_total",
+        "id, item_id, part_no, description, hsn_sac, qty, unit, rate, tax_percent, cgst_amt, sgst_amt, igst_amt, line_total",
       )
       .eq("voucher_id", voucherId)
       .order("line_no"),

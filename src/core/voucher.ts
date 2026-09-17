@@ -17,6 +17,7 @@ export type VoucherStatus = "draft" | "posted" | "cancelled";
 
 export interface VoucherLineInput {
   itemId: string | null;
+  partNo: string;
   description: string;
   hsnSac: string;
   qty: number;

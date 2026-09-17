@@ -254,6 +254,50 @@ label {
   background: #f3f6fb;
 }
 
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.data-table thead th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.data-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table th.sortable:hover {
+  color: var(--accent);
+}
+
+.data-table-filter-row th {
+  padding: 4px 10px 10px;
+}
+
+.data-table-filter-row input,
+.data-table-filter-row select {
+  width: 100%;
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  text-transform: none;
+  font-weight: 400;
+}
+
 .hint-text {
   color: var(--muted);
   font-size: 0.85rem;

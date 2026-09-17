@@ -17,6 +17,7 @@ import type { Item } from "../../core/types";
 
 const BLANK_LINE: VoucherLineInput = {
   itemId: null,
+  partNo: "",
   description: "",
   hsnSac: "",
   qty: 1,
@@ -49,6 +50,7 @@ export function LineItemTable({
     }
     updateLine(index, {
       itemId: item.id,
+      partNo: item.code,
       description: item.name,
       hsnSac: item.hsnSac,
       unit: item.unit,
@@ -70,6 +72,7 @@ export function LineItemTable({
       <thead>
         <tr>
           <th>Item</th>
+          <th>Part No.</th>
           <th>Description</th>
           <th>HSN/SAC</th>
           <th>Qty</th>
@@ -92,6 +95,12 @@ export function LineItemTable({
             <tr key={index}>
               <td>
                 <ItemPicker items={items} value={line.itemId} onSelect={(item) => selectItem(index, item)} />
+              </td>
+              <td>
+                <input
+                  value={line.partNo}
+                  onInput={(e) => updateLine(index, { partNo: (e.target as HTMLInputElement).value })}
+                />
               </td>
               <td>
                 <input
@@ -152,7 +161,7 @@ export function LineItemTable({
       </tbody>
       <tfoot>
         <tr>
-          <td colSpan={12}>
+          <td colSpan={13}>
             <button type="button" onClick={addLine}>
               Add line
             </button>

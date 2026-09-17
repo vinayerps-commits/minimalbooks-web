@@ -9,6 +9,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { createParty, deleteParty, listParties, updateParty, type PartyInput } from "../../io/parties";
 import { currentCompany } from "../store";
+import { DataTable, type DataTableColumn } from "../widgets/DataTable";
 import type { GstRegistrationType, Party, PartyType } from "../../core/types";
 
 const BLANK: PartyInput = {
@@ -108,6 +109,36 @@ export function PartiesPage() {
     return (e: Event) => setForm({ ...form, [key]: (e.target as HTMLInputElement).value });
   }
 
+  const columns: DataTableColumn<Party>[] = [
+    { key: "name", label: "Name", accessor: (p) => p.name, sortable: true, filter: "text" },
+    { key: "partyType", label: "Type", accessor: (p) => p.partyType, sortable: true, filter: "select" },
+    { key: "state", label: "State", accessor: (p) => p.state, sortable: true, filter: "select" },
+    { key: "gstin", label: "GSTIN", accessor: (p) => p.gstin, sortable: true },
+    {
+      key: "gstRegistrationType",
+      label: "GST reg.",
+      accessor: (p) => p.gstRegistrationType,
+      sortable: true,
+      filter: "select",
+    },
+    { key: "phone", label: "Phone", accessor: (p) => p.phone },
+    {
+      key: "actions",
+      label: "",
+      accessor: () => "",
+      render: (p) => (
+        <>
+          <button class="link-button" onClick={() => startEdit(p)}>
+            Edit
+          </button>
+          <button class="link-button" onClick={() => remove(p.id)}>
+            Delete
+          </button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <div class="master-page">
       <div class="master-page-header">
@@ -198,39 +229,7 @@ export function PartiesPage() {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table class="master-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>State</th>
-              <th>GSTIN</th>
-              <th>GST reg.</th>
-              <th>Phone</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {parties.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name}</td>
-                <td>{p.partyType}</td>
-                <td>{p.state}</td>
-                <td>{p.gstin}</td>
-                <td>{p.gstRegistrationType}</td>
-                <td>{p.phone}</td>
-                <td>
-                  <button class="link-button" onClick={() => startEdit(p)}>
-                    Edit
-                  </button>
-                  <button class="link-button" onClick={() => remove(p.id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable columns={columns} rows={parties} rowKey={(p) => p.id} emptyMessage="No parties yet." />
       )}
     </div>
   );

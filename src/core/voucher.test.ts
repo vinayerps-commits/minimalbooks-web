@@ -4,9 +4,19 @@ import { computeVoucherTotals, type VoucherLineInput } from "./voucher";
 describe("computeVoucherTotals", () => {
   it("sums multiple intra-state lines and rounds the grand total", () => {
     const lines: VoucherLineInput[] = [
-      { itemId: "a", description: "Widget", hsnSac: "8481", qty: 2, unit: "Nos", rate: 500, taxPercent: 18 },
+      {
+        itemId: "a",
+        partNo: "P-A",
+        description: "Widget",
+        hsnSac: "8481",
+        qty: 2,
+        unit: "Nos",
+        rate: 500,
+        taxPercent: 18,
+      },
       {
         itemId: "b",
+        partNo: "P-B",
         description: "Gadget",
         hsnSac: "8482",
         qty: 1,
@@ -29,7 +39,16 @@ describe("computeVoucherTotals", () => {
 
   it("uses IGST for inter-state and leaves CGST/SGST at zero", () => {
     const lines: VoucherLineInput[] = [
-      { itemId: "a", description: "Widget", hsnSac: "8481", qty: 1, unit: "Nos", rate: 1000, taxPercent: 18 },
+      {
+        itemId: "a",
+        partNo: "P-A",
+        description: "Widget",
+        hsnSac: "8481",
+        qty: 1,
+        unit: "Nos",
+        rate: 1000,
+        taxPercent: 18,
+      },
     ];
     const totals = computeVoucherTotals(lines, "27", "29");
     expect(totals.cgstTotal).toBe(0);

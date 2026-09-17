@@ -11,6 +11,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { createItem, deleteItem, listItems, updateItem, type ItemInput } from "../../io/items";
 import { currentCompany } from "../store";
+import { DataTable, type DataTableColumn } from "../widgets/DataTable";
 import type { Item, ItemType } from "../../core/types";
 
 const BLANK: ItemInput = {
@@ -105,6 +106,45 @@ export function ItemsPage() {
     return (e: Event) => setForm({ ...form, [key]: Number((e.target as HTMLInputElement).value) });
   }
 
+  const columns: DataTableColumn<Item>[] = [
+    { key: "code", label: "Code", accessor: (i) => i.code, sortable: true, filter: "text" },
+    { key: "name", label: "Name", accessor: (i) => i.name, sortable: true, filter: "text" },
+    { key: "itemType", label: "Type", accessor: (i) => i.itemType, sortable: true, filter: "select" },
+    { key: "hsnSac", label: "HSN/SAC", accessor: (i) => i.hsnSac, sortable: true },
+    { key: "unit", label: "Unit", accessor: (i) => i.unit, sortable: true, filter: "select" },
+    {
+      key: "saleRate",
+      label: "Sale rate",
+      accessor: (i) => i.saleRate,
+      render: (i) => i.saleRate.toFixed(2),
+      sortable: true,
+      align: "right",
+    },
+    {
+      key: "taxPercent",
+      label: "Tax %",
+      accessor: (i) => i.taxPercent,
+      sortable: true,
+      filter: "select",
+      align: "right",
+    },
+    {
+      key: "actions",
+      label: "",
+      accessor: () => "",
+      render: (i) => (
+        <>
+          <button class="link-button" onClick={() => startEdit(i)}>
+            Edit
+          </button>
+          <button class="link-button" onClick={() => remove(i.id)}>
+            Delete
+          </button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <div class="master-page">
       <div class="master-page-header">
@@ -188,41 +228,7 @@ export function ItemsPage() {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table class="master-table">
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>HSN/SAC</th>
-              <th>Unit</th>
-              <th>Sale rate</th>
-              <th>Tax %</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((it) => (
-              <tr key={it.id}>
-                <td>{it.code}</td>
-                <td>{it.name}</td>
-                <td>{it.itemType}</td>
-                <td>{it.hsnSac}</td>
-                <td>{it.unit}</td>
-                <td>{it.saleRate}</td>
-                <td>{it.taxPercent}</td>
-                <td>
-                  <button class="link-button" onClick={() => startEdit(it)}>
-                    Edit
-                  </button>
-                  <button class="link-button" onClick={() => remove(it.id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable columns={columns} rows={items} rowKey={(i) => i.id} emptyMessage="No items yet." />
       )}
     </div>
   );
