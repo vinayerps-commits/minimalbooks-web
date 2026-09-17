@@ -30,10 +30,14 @@ jobs:
           # Browser-safe values only (protected by Row Level Security, see
           # supabase/migrations/) -- Vite inlines VITE_-prefixed vars into
           # the built bundle at this step, so these must never be the
-          # service-role/secret key. Set both as repository secrets under
-          # Settings -> Secrets and variables -> Actions.
+          # service-role/secret key. Set as repository secrets under
+          # Settings -> Secrets and variables -> Actions. Only one of the
+          # two key secrets needs to actually be set (lib/supabaseClient.ts
+          # falls back from PUBLISHABLE_KEY to ANON_KEY) -- both are passed
+          # through so either key format works without editing this file.
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
