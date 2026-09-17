@@ -141,9 +141,12 @@ export interface InvoiceRegisterRow extends Voucher {
 /** Lists invoices for the register, most recent first, with the party
  *  name resolved for display (avoids a per-row lookup in the UI). */
 export async function listInvoices(companyId: string): Promise<Result<InvoiceRegisterRow[]>> {
+  // vouchers has two FKs into parties (party_id and ship_to_party_id), so
+  // the embed must name which one via its constraint -- plain
+  // "parties(name)" is ambiguous and PostgREST rejects it (PGRST201).
   const { data, error } = await getSupabaseClient()
     .from("vouchers")
-    .select(`${VOUCHER_COLUMNS}, parties(name)`)
+    .select(`${VOUCHER_COLUMNS}, parties!vouchers_party_id_fkey(name)`)
     .eq("company_id", companyId)
     .eq("book_key", "invoice")
     .order("voucher_date", { ascending: false })
