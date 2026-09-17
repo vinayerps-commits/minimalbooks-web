@@ -195,12 +195,17 @@ function lineFromRow(row: VoucherLineRow): VoucherLine {
   };
 }
 
-/** Fetches one invoice with its lines, for viewing/printing. */
+/** Fetches one invoice with its lines and party name, for viewing/printing. */
 export async function getInvoice(
   voucherId: string,
-): Promise<Result<{ voucher: Voucher; lines: VoucherLine[] }>> {
+): Promise<Result<{ voucher: Voucher; partyName: string | null; lines: VoucherLine[] }>> {
   const [voucherResult, linesResult] = await Promise.all([
-    getSupabaseClient().from("vouchers").select(VOUCHER_COLUMNS).eq("id", voucherId).single(),
+    getSupabaseClient()
+      .from("vouchers")
+      // See listInvoices' comment on why the party_id FK must be named explicitly.
+      .select(`${VOUCHER_COLUMNS}, parties!vouchers_party_id_fkey(name)`)
+      .eq("id", voucherId)
+      .single(),
     getSupabaseClient()
       .from("voucher_lines")
       .select(
@@ -213,10 +218,16 @@ export async function getInvoice(
   if (voucherResult.error) return { ok: false, error: describeError(voucherResult.error) };
   if (linesResult.error) return { ok: false, error: describeError(linesResult.error) };
 
+  const voucherRow = voucherResult.data as unknown as VoucherRow & {
+    parties: { name: string }[] | { name: string } | null;
+  };
+  const party = Array.isArray(voucherRow.parties) ? voucherRow.parties[0] : voucherRow.parties;
+
   return {
     ok: true,
     value: {
-      voucher: voucherFromRow(voucherResult.data as VoucherRow),
+      voucher: voucherFromRow(voucherRow),
+      partyName: party?.name ?? null,
       lines: (linesResult.data as VoucherLineRow[]).map(lineFromRow),
     },
   };

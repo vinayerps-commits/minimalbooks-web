@@ -246,6 +246,14 @@ label {
   font-variant-numeric: tabular-nums;
 }
 
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background: #f3f6fb;
+}
+
 .hint-text {
   color: var(--muted);
   font-size: 0.85rem;

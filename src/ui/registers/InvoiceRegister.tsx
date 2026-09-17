@@ -2,20 +2,23 @@
  * MinimalBooks
  * ui/registers/InvoiceRegister.tsx
  *
- * Read-only list of invoices, most recent first (io/vouchers.ts's
- * listInvoices). No open/edit/print yet -- see InvoiceForm's header
- * comment on why editing a posted voucher isn't built in Phase 1.
+ * List of invoices, most recent first (io/vouchers.ts's listInvoices).
+ * Clicking a row opens InvoiceDetail in place (no router in this app --
+ * see ui/nav.ts -- so "open" is just local state, matching how Shell
+ * swaps screens by nav entry).
  */
 
 import { useEffect, useState } from "preact/hooks";
 import { listInvoices, type InvoiceRegisterRow } from "../../io/vouchers";
 import { currentCompany } from "../store";
+import { InvoiceDetail } from "./InvoiceDetail";
 
 export function InvoiceRegister() {
   const companyId = currentCompany.value!.id;
   const [rows, setRows] = useState<InvoiceRegisterRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -28,6 +31,8 @@ export function InvoiceRegister() {
       setRows(result.value);
     })();
   }, []);
+
+  if (openId) return <InvoiceDetail voucherId={openId} onBack={() => setOpenId(null)} />;
 
   if (loading) return <p>Loading...</p>;
 
@@ -48,7 +53,7 @@ export function InvoiceRegister() {
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={r.id}>
+            <tr key={r.id} class="clickable-row" onClick={() => setOpenId(r.id)}>
               <td>{r.voucherNo ?? "(draft)"}</td>
               <td>{r.voucherDate}</td>
               <td>{r.partyName}</td>
