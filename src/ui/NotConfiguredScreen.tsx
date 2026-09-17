@@ -13,8 +13,8 @@ export function NotConfiguredScreen() {
       <h1>MinimalBooks</h1>
       <p>Supabase isn't configured yet.</p>
       <p>
-        Copy <code>.env.local.example</code> to <code>.env.local</code> and fill in your Supabase
-        project's URL and publishable key, then restart the dev server.
+        Copy <code>.env.local.example</code> to <code>.env.local</code> and fill in your Supabase project's
+        URL and publishable key, then restart the dev server.
       </p>
     </div>
   );

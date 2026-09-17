@@ -65,6 +65,7 @@ export function getSupabaseClient(): SupabaseClient {
 export function isSupabaseConfigured(): boolean {
   return (
     nonEmpty(import.meta.env.VITE_SUPABASE_URL) &&
-    (nonEmpty(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) || nonEmpty(import.meta.env.VITE_SUPABASE_ANON_KEY))
+    (nonEmpty(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) ||
+      nonEmpty(import.meta.env.VITE_SUPABASE_ANON_KEY))
   );
 }

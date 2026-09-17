@@ -17,6 +17,11 @@ import { Placeholder } from "./widgets/Placeholder";
 import { PartiesPage } from "./masters/PartiesPage";
 import { ItemsPage } from "./masters/ItemsPage";
 import { CompanySettingsPage } from "./masters/CompanySettingsPage";
+import { InvoiceForm } from "./forms/InvoiceForm";
+import { InvoiceRegister } from "./registers/InvoiceRegister";
+import { Gstr1Report } from "./reports/Gstr1Report";
+import { Gstr3bReport } from "./reports/Gstr3bReport";
+import { HsnSummaryReport } from "./reports/HsnSummaryReport";
 
 export interface BookEntry {
   key: string;
@@ -47,7 +52,7 @@ export const NAV_TABS: NavTab[] = [
       {
         heading: "Sales",
         entries: [
-          placeholder("Invoice Book", "invoice"),
+          { key: "invoice", label: "Invoice Book", component: InvoiceForm },
           placeholder("Delivery Challan Book", "delivery_challan"),
           placeholder("Credit Note Book", "credit_note"),
           placeholder("Receipt Book", "receipt"),
@@ -93,7 +98,7 @@ export const NAV_TABS: NavTab[] = [
       {
         heading: "Registers",
         entries: [
-          placeholder("Invoice Register", "invoice_register"),
+          { key: "invoice_register", label: "Invoice Register", component: InvoiceRegister },
           placeholder("Purchase Register", "purchase_register"),
           placeholder("Payment Register", "payment_register"),
         ],
@@ -122,9 +127,9 @@ export const NAV_TABS: NavTab[] = [
       {
         heading: "GST",
         entries: [
-          placeholder("GSTR-1 Summary", "gstr1"),
-          placeholder("GSTR-3B Summary", "gstr3b"),
-          placeholder("HSN Summary", "hsn_summary"),
+          { key: "gstr1", label: "GSTR-1 Summary", component: Gstr1Report },
+          { key: "gstr3b", label: "GSTR-3B Summary", component: Gstr3bReport },
+          { key: "hsn_summary", label: "HSN Summary", component: HsnSummaryReport },
         ],
       },
     ],
