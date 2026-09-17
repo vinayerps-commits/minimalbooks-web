@@ -22,11 +22,22 @@
 import { createClient } from "@supabase/supabase-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+// GitHub Actions sets `${{ secrets.X }}` to an empty string (not unset)
+// when secret X doesn't exist on the repo -- so a repo that only defines
+// VITE_SUPABASE_ANON_KEY still gets VITE_SUPABASE_PUBLISHABLE_KEY="" passed
+// through by deploy.yml. `??` doesn't fall through on "", only null/
+// undefined, so the fallback chain below must treat "" as absent too.
+function nonEmpty(value: string | undefined): value is string {
+  return value !== undefined && value !== "";
+}
+
 function requiredConfig(): { url: string; key: string } {
   const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const key = nonEmpty(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY)
+    ? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+    : import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-  if (url === undefined || key === undefined) {
+  if (!nonEmpty(url) || !nonEmpty(key)) {
     throw new Error(
       "Supabase isn't configured: set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY " +
         "(or VITE_SUPABASE_ANON_KEY) -- see .env.local.example.",
@@ -53,8 +64,7 @@ export function getSupabaseClient(): SupabaseClient {
  *  run without Supabase configured. */
 export function isSupabaseConfigured(): boolean {
   return (
-    import.meta.env.VITE_SUPABASE_URL !== undefined &&
-    (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY !== undefined ||
-      import.meta.env.VITE_SUPABASE_ANON_KEY !== undefined)
+    nonEmpty(import.meta.env.VITE_SUPABASE_URL) &&
+    (nonEmpty(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) || nonEmpty(import.meta.env.VITE_SUPABASE_ANON_KEY))
   );
 }
